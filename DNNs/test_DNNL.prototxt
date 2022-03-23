@@ -1,0 +1,195 @@
+name: "DNN_L"
+input: "data"
+input_dim: 1
+input_dim: 3
+input_dim: 200
+input_dim: 300
+
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  convolution_param {
+    num_output: 96
+    kernel_size: 11
+    pad: 25
+  }
+}
+
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 1 #2
+  }
+}
+layer {
+  name: "norm1"
+  type: "LRN"
+  bottom: "pool1"
+  top: "norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "norm1"
+  top: "conv2"
+  convolution_param {
+    num_output: 256
+    kernel_size: 5
+    kstride: 2
+  }
+}
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1 #2
+    kstride: 2
+  }
+}
+
+layer {
+  name: "conv3"
+  type: "Convolution"
+  convolution_param {
+    num_output: 384
+    kernel_size: 3
+    kstride: 4
+  }
+  bottom: "pool2"
+  top: "conv3"
+}
+
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 1 #3
+    kstride: 4
+  }
+}
+
+
+layer {
+  name: "fc-conv4"
+  type: "Convolution"
+  bottom: "pool3"
+  top: "fc-conv4"
+  convolution_param {
+    num_output: 2048
+    kernel_size: 2
+    kstride: 12
+  }
+}
+
+layer {
+  name: "relu4"
+  type: "ReLU"
+  bottom: "fc-conv4"
+  top: "fc-conv4"
+}
+
+layer {
+  name: "drop4"
+  type: "Dropout"
+  bottom: "fc-conv4"
+  top: "fc-conv4"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+
+layer {
+  name: "fc-conv5"
+  type: "Convolution"
+  bottom: "fc-conv4"
+  top: "fc-conv5"
+  convolution_param {
+    num_output: 2048
+    kernel_size: 1
+    # kstride: 12
+  }
+}
+
+layer {
+  name: "relu5"
+  type: "ReLU"
+  bottom: "fc-conv5"
+  top: "fc-conv5"
+}
+
+layer {
+  name: "drop5"
+  type: "Dropout"
+  bottom: "fc-conv5"
+  top: "fc-conv5"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+
+##############################3
+layer {
+  name: "fc-conv6"
+  type: "Convolution"
+  bottom: "fc-conv5"
+  top: "fc-conv6"
+  convolution_param {
+    num_output: 2
+    kernel_size: 1
+    # kstride: 12
+    }
+}
+
+#layer {
+#  name: "prob"
+#  type: "Softmax"
+#  bottom: "fc-conv6"
+#  top: "prob"
+#}
+
+
+
+
+
+
+

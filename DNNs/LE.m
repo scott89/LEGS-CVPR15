@@ -1,0 +1,17 @@
+function local_s_map = LE(I)
+win = hann(size(I,1))*hann(size(I,2))';
+win = win.^0.5;
+% I(:,:,1) = double(I(:,:,1)).*win;
+% I(:,:,2) = double(I(:,:,2)).*win;
+% I(:,:,3) = double(I(:,:,3)).*win;
+I = impreprocess(double(I));
+I = permute(I, [2,1,3]);
+data = {single(I)};
+scores = caffe('forward', 'DNNL', data);
+b = exp(scores{1}(:,:,1));
+f = exp(scores{1}(:,:,2));
+pxl_map = f./(f+b);
+pxl_map = permute(pxl_map, [2,1,3]);
+% local_s_map = zeros(size(pxl_map));
+% local_s_map(15:end-15, 15:end-15) = pxl_map(15:end-15, 15:end-15);
+local_s_map = pxl_map.*win;
